@@ -1,14 +1,14 @@
 package com.overdrive.bangtwitch.model.api;
 
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import com.overdrive.bangtwitch.model.dto.AuthStatusDTO;
+import retrofit2.Call;
+import retrofit2.http.*;
 
 public interface TwitchService {
-    @GET("/oauth2/authorize")
-    void auth(
+
+    @POST("oauth2/revoke")
+    Call<AuthStatusDTO> authorize(
             @Query("client_id")String clientId,
-            @Query("redirect_uri") String redirectUri,
-            @Query("response_type") String responseType,
-            @Query("scope")String scope
+            @Query("token")String token
     );
 }

@@ -1,8 +1,12 @@
 package com.overdrive.bangtwitch;
 
 import com.overdrive.bangtwitch.model.Storage;
+import com.overdrive.bangtwitch.model.api.ApiModule;
+import com.overdrive.bangtwitch.model.api.TwitchService;
+import com.overdrive.bangtwitch.model.dto.AuthStatusDTO;
 import com.overdrive.bangtwitch.view.MenuController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -10,6 +14,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.Objects;
 
 public class MainApp extends Application {
 
@@ -30,6 +38,12 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("BangTitch");
 
+        initOnStopApp();
+        initRootLayout();
+        authorization();
+    }
+
+    private void initOnStopApp() {
         this.primaryStage.setOnCloseRequest(event -> {
             Storage instance = Storage.getInstance();
             try {
@@ -46,9 +60,6 @@ public class MainApp extends Application {
                 e.printStackTrace();
             }
         });
-
-        initRootLayout();
-        authorization();
     }
 
     private void initRootLayout() {
@@ -84,16 +95,36 @@ public class MainApp extends Application {
             }
         });
 
-
         rootLayout.setCenter(webView);
     }
 
     private void authorization() {
 
+        TwitchService client = ApiModule.getTwitchApiInterface();
+
         Hashtable<String, Object> pref = Storage.getInstance().getPreference();
-        if (pref.get("OAuth") != null) {
-            System.out.println("Key = " + pref.get("OAuth"));
-            showMenuLayout();
+
+        String token = (String) pref.get("OAuth");
+
+        if (token != null) {
+            Call<AuthStatusDTO> call = client.authorize("16w9wz5ge9mtipznr4rmk1cda0z4we", token);
+
+            call.enqueue(new Callback<AuthStatusDTO>() {
+                @Override
+                public void onResponse(Call<AuthStatusDTO> call, Response<AuthStatusDTO> response) {
+                    if(!Objects.equals(response.body().getStatus(), "ok")){
+                        Platform.runLater(()->showAuthLayout());
+                    }else {
+                        Platform.runLater(()->showMenuLayout());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AuthStatusDTO> call, Throwable throwable) {
+                    System.err.println("err: "+throwable.getMessage());
+                }
+            });
+
         } else {
             showAuthLayout();
         }
