@@ -122,6 +122,14 @@ public class MainViewController {
                     }
                 }
             });
+        } else{
+            centerFlow = new Flow(LoginViewController.class);
+            centerFlowHandler = centerFlow.createHandler(Helper.getViewFlowContext());
+            try {
+                drawer.setContent(centerFlowHandler.start());
+            } catch (FlowException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
