@@ -1,6 +1,6 @@
-package com.overdrive.bangtwitch.model.api;
+package model.api;
 
-import com.overdrive.bangtwitch.model.dto.AuthStatusDTO;
+import model.dto.AuthStatusDTO;
 import retrofit2.Call;
 import retrofit2.http.*;
 

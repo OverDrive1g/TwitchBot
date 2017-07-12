@@ -1,4 +1,4 @@
-package com.overdrive.bangtwitch.model;
+package model;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;

@@ -1,4 +1,4 @@
-package com.overdrive.bangtwitch.model;
+package model;
 
 import io.datafx.controller.flow.context.ViewFlowContext;
 

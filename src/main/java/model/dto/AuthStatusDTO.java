@@ -1,4 +1,4 @@
-package com.overdrive.bangtwitch.model.dto;
+package model.dto;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

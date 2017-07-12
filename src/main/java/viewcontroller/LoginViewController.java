@@ -1,37 +1,33 @@
-package com.overdrive.bangtwitch.viewcontroller;
+package viewcontroller;
 
-import com.jfoenix.controls.JFXSpinner;
-import com.overdrive.bangtwitch.model.Helper;
-import com.overdrive.bangtwitch.model.Storage;
 import io.datafx.controller.FXMLController;
-import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
-import io.datafx.controller.flow.FlowHandler;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ActionHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.FlowActionHandler;
 import io.datafx.controller.flow.context.ViewFlowContext;
+import io.datafx.controller.util.VetoException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import model.Storage;
 
 import javax.annotation.PostConstruct;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@FXMLController("/com/overdrive/bangtwitch/fxml/login.fxml")
+@FXMLController("/fxml/login.fxml")
 public class LoginViewController {
 
-    @FXML
-    private AnchorPane anchorPane;
+    @ActionHandler
+    private FlowActionHandler actionHandler;
+
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
+
     @FXML
     private WebView webView;
-
-    private Flow centerFlow;
-    private FlowHandler centerFlowHandler;
 
     @PostConstruct
     public void init() {
@@ -48,14 +44,15 @@ public class LoginViewController {
                         String oauth = new URL(newValue).getRef().split("&")[0].split("=")[1];
                         Storage.getInstance().getPreference().put("OAuth", oauth);
 
-                        Flow flow = new Flow(HomeViewController.class);
-                        DefaultFlowContainer container = new DefaultFlowContainer();
-                        flow.createHandler(Helper.getViewFlowContext()).start(container);
-//                        drawer.setContent(centerFlowHandler.start());
+                        Platform.runLater(() -> {
+                            try {
+                                actionHandler.handle("loginAccept");
+                            } catch (VetoException | FlowException e) {
+                                e.printStackTrace();
+                            }
+                        });
 
                     } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (FlowException e) {
                         e.printStackTrace();
                     }
                 }

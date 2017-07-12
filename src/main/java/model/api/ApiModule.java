@@ -1,4 +1,4 @@
-package com.overdrive.bangtwitch.model.api;
+package model.api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

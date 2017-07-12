@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane>
+        <top>
+            <VBox spacing="20">
+                <fx:include source="toolbar.fxml" />
+            </VBox>
+        </top>
+        <center>
+            <JFXDrawer fx:id="drawer" defaultDrawerSize="250" direction="LEFT">
+                <styleClass>
+                    <String fx:value="body"/>
+                </styleClass>
+            </JFXDrawer>
+        </center>
+    </BorderPane>
+</StackPane>

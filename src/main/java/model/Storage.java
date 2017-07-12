@@ -1,4 +1,4 @@
-package com.overdrive.bangtwitch.model;
+package model;
 
 import java.io.*;
 import java.nio.file.Paths;
