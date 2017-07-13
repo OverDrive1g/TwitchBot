@@ -10,14 +10,14 @@ public class IRCBot extends PircBot{
     private String channel;
 
     public IRCBot() {
-        this.setName("soronzonboldyn_batcjecjeg");
+        this.setName("overdrive1g");
         this.isConnected();
         this.callback = (sender, message) -> {/*todo*/};
-        setVerbose(true);
+//        setVerbose(true);
     }
 
     public IRCBot(OnMessage callback) {
-        this.setName("soronzonboldyn_batcjecjeg");
+        this.setName("overdrive1g");
         this.isConnected();
         this.callback = callback;
         setVerbose(true);
@@ -35,9 +35,10 @@ public class IRCBot extends PircBot{
 
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-        if (message.equalsIgnoreCase("!vk")) {
-            this.sendMessage(channel, String.format("@%s, vk.com/dd.junior", sender));
-        }
+        callback.onMessage(sender, message);
+//        if (message.equalsIgnoreCase("!vk")) {
+//            this.sendMessage(channel, String.format("@%s, vk.com/dd.junior", sender));
+//        }
     }
 
     public interface OnMessage{

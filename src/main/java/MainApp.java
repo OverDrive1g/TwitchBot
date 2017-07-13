@@ -6,13 +6,12 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.Helper;
+import model.IRCBot;
 import model.Storage;
 import viewcontroller.MainViewController;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.nio.file.Paths;
 
 public class MainApp extends Application {
@@ -23,7 +22,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         Flow flow = new Flow(MainViewController.class);
         DefaultFlowContainer container = new DefaultFlowContainer();
         FlowHandler flowHandler = flow.createHandler();
@@ -45,12 +43,28 @@ public class MainApp extends Application {
 
     @Override
     public void stop() throws Exception {
+
+        IRCBot bot = (IRCBot) Helper.preferance.get("bot");
+        bot.disconnect();
+        bot.dispose();
+
         Storage instance = Storage.getInstance();
         try {
-            ObjectOutput out = new ObjectOutputStream(new FileOutputStream(Paths.get(System.getProperty("user.home"),
-                    ".bang-twitch").toString() + System.getProperty("file.separator")+ "pref.ser"));
+            String filePath = Paths.get(System.getProperty("user.home"), ".bang-twitch").toString() +
+                    System.getProperty("file.separator");
+
+            File f = new File(filePath);
+            if(!f.exists()){
+                f.mkdir();
+            }
+
+            ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(
+                    filePath = Paths.get(System.getProperty("user.home"), ".bang-twitch").toString() +
+                            System.getProperty("file.separator")+"pref.ser"
+            )));
             out.writeObject(instance);
             out.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
