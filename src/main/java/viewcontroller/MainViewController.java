@@ -20,14 +20,12 @@ import model.Helper;
 import model.Storage;
 import model.api.ApiModule;
 import model.api.TwitchService;
-import model.dto.AuthStatusDTO;
 import model.dto.TokenStatus;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import javax.annotation.PostConstruct;
-import java.util.Objects;
 
 @FXMLController("/fxml/main.fxml")
 public class MainViewController {
@@ -104,6 +102,7 @@ public class MainViewController {
             @Override
             public void onResponse(Call<TokenStatus> call, Response<TokenStatus> response) {
                 if(response.body().getToken().getValid()){
+                    Helper.preferance.put("userName", response.body().getToken().getUserName());
                     Platform.runLater(() -> {
                         try {
                             flowHandler.handle("authAccept");

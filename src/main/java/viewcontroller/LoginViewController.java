@@ -35,7 +35,7 @@ public class LoginViewController {
         Platform.runLater(()->{
             WebEngine engine = webView.getEngine();
             engine.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/601.6.17 (KHTML, like Gecko) Version/9.1.1 Safari/601.6.17");
-            engine.load("https://api.twitch.tv/kraken/oauth2/authorize?client_id=16w9wz5ge9mtipznr4rmk1cda0z4we&redirect_uri=https://www.twitch.tv/kraken/oauth2/authorize&response_type=token&scope=channel_subscriptions+chat_login+channel_read");
+            engine.load("https://api.twitch.tv/kraken/oauth2/authorize?client_id=16w9wz5ge9mtipznr4rmk1cda0z4we&redirect_uri=https://www.twitch.tv/kraken/oauth2/authorize&response_type=token&scope=chat_login+user_read");
 
             engine.locationProperty().addListener((observable, oldValue, newValue) -> {
                 int i = newValue.indexOf("https://www.twitch.tv/kraken/oauth2/authorize#access_token=");

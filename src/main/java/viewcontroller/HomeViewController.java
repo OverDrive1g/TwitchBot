@@ -1,5 +1,6 @@
 package viewcontroller;
 
+import com.jfoenix.controls.JFXSnackbar;
 import io.datafx.controller.FXMLController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,6 +11,12 @@ import javafx.scene.layout.StackPane;
 import model.Helper;
 import model.IRCBot;
 import model.Storage;
+import model.api.ApiModule;
+import model.api.TwitchService;
+import model.dto.UserDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import javax.annotation.PostConstruct;
 
@@ -17,7 +24,8 @@ import javax.annotation.PostConstruct;
 public class HomeViewController {
 
     public static final int MAX_COUNT_MESSAGES = 500;
-
+    @FXML
+    private StackPane home;
     @FXML
     private ListView<Label> chatListView;
     @FXML
@@ -25,14 +33,28 @@ public class HomeViewController {
     @FXML
     private StackPane chatContainer;
 
+    JFXSnackbar bar;
+
     private IRCBot bot;
 
     @PostConstruct
     public void init() {
+        bar = new JFXSnackbar(home);
+        initBot();
+    }
+
+    private void initBot(){
         bot = new IRCBot((sender, message) -> addMessage(sender + ": " + message));
         String auth ="oauth:"+Storage.getInstance().getPreference().get("OAuth");
-        System.out.println(auth);
-        bot.join(auth,"#overdrive1g");
+        if(Helper.preferance.get("userName") == null){
+            getUserName();
+        } else {
+            bot.join(auth, "#"+Helper.preferance.get("userName"));
+        }
+
+        bot.setOnJoin((channel, sender, login, hostname)->
+                bar.enqueue(new JFXSnackbar.SnackbarEvent(String.format("Бот подключился к %s", sender))));
+
         Helper.preferance.put("bot", bot);
     }
 
@@ -45,6 +67,24 @@ public class HomeViewController {
             chatListView.getItems().add(newLabel);
             if(chatListView.getItems().size() > MAX_COUNT_MESSAGES){
                 chatListView.getItems().remove(0);
+            }
+        });
+    }
+
+    public void getUserName(){
+        TwitchService client = ApiModule.getTwitchApiInterface();
+        Call<UserDTO> call = client.getUserInfo("OAuth " + Storage.getInstance().getPreference().get("OAuth"));
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                Helper.preferance.put("userName", response.body().getName());
+                bot.join("oauth:"+Storage.getInstance().getPreference().get("OAuth"),
+                        "#"+response.body().getName());
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable throwable) {
+                System.err.println("Бля, пизде, яхз пока чо сюда написать");
             }
         });
     }
