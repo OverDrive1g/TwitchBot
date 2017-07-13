@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiModule {
-    private static final String BASE_URL = "https://api.twitch.tv/kraken/";
+    public static final String BASE_URL = "https://api.twitch.tv/kraken/";
 
     private ApiModule() {
     }

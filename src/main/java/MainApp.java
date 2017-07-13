@@ -45,8 +45,10 @@ public class MainApp extends Application {
     public void stop() throws Exception {
 
         IRCBot bot = (IRCBot) Helper.preferance.get("bot");
-        bot.disconnect();
-        bot.dispose();
+        if(bot != null){
+            bot.disconnect();
+            bot.dispose();
+        }
 
         Storage instance = Storage.getInstance();
         try {
@@ -59,7 +61,7 @@ public class MainApp extends Application {
             }
 
             ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(
-                    filePath = Paths.get(System.getProperty("user.home"), ".bang-twitch").toString() +
+                    Paths.get(System.getProperty("user.home"), ".bang-twitch").toString() +
                             System.getProperty("file.separator")+"pref.ser"
             )));
             out.writeObject(instance);

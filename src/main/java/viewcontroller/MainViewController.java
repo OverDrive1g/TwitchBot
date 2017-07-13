@@ -21,6 +21,7 @@ import model.Storage;
 import model.api.ApiModule;
 import model.api.TwitchService;
 import model.dto.AuthStatusDTO;
+import model.dto.TokenStatus;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -97,15 +98,24 @@ public class MainViewController {
 
     private void validateToken(String token) {
         TwitchService client = ApiModule.getTwitchApiInterface();
-        Call<AuthStatusDTO> call = client.authorize(Helper.CLIENT_ID, token);
 
-        call.enqueue(new Callback<AuthStatusDTO>() {
+        Call<TokenStatus> call = client.getTokenStatus("OAuth "+token,ApiModule.BASE_URL);
+        call.enqueue(new Callback<TokenStatus>() {
             @Override
-            public void onResponse(Call<AuthStatusDTO> call, Response<AuthStatusDTO> response) {
-                if (Objects.equals(response.body().getStatus(), "ok")) {
+            public void onResponse(Call<TokenStatus> call, Response<TokenStatus> response) {
+                if(response.body().getToken().getValid()){
                     Platform.runLater(() -> {
                         try {
                             flowHandler.handle("authAccept");
+                        } catch (VetoException | FlowException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } else{
+                    Platform.runLater(() -> {
+                        try {
+                            flowHandler.handle("authNotPass");
+                            toolbar.setVisible(true);
                         } catch (VetoException | FlowException e) {
                             e.printStackTrace();
                         }
@@ -114,7 +124,7 @@ public class MainViewController {
             }
 
             @Override
-            public void onFailure(Call<AuthStatusDTO> call, Throwable throwable) {
+            public void onFailure(Call<TokenStatus> call, Throwable throwable) {
                 try {
                     flowHandler.handle("authNotPass");
                     toolbar.setVisible(true);
