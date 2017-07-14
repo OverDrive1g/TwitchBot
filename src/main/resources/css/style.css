@@ -40,6 +40,7 @@
 
 .jfx-tool-bar Label {
     -fx-text-fill: WHITE;
+    -fx-text-background-color: BLACK;
 }
 
 .jfx-tool-bar .jfx-options-burger {

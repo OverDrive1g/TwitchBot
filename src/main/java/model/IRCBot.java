@@ -42,10 +42,16 @@ public class IRCBot extends PircBot{
 
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-        callback.onMessage(sender, message);
-        if (message.equalsIgnoreCase("!vk")) {
-            this.sendMessage(channel, String.format("@%s, vk.com/dd.junior", sender));
+        if (message.equalsIgnoreCase("!kappa") && sender.equals("overdrive1g")) {
+            this.sendMessage(channel, "Kappa Kappa Kappa Kappa Kappa Kappa Kappa");
+        } else if(message.equalsIgnoreCase("!residentsleeper") && sender.equals("overdrive1g")){
+            this.sendMessage(channel, "ResidentSleeper ResidentSleeper ResidentSleeper ResidentSleeper ResidentSleeper ResidentSleeper ResidentSleeper");
+        }else if(message.equalsIgnoreCase("!KappaPride") && sender.equals("overdrive1g")){
+            this.sendMessage(channel, "KappaPride KappaPride KappaPride KappaPride KappaPride KappaPride KappaPride");
+        }else if(message.equalsIgnoreCase("!любви") && sender.equals("overdrive1g")){
+            this.sendMessage(channel, "<3 <3 <3 <3 <3 <3 <3 <3 <3");
         }
+        callback.onMessage(sender, message);
     }
 
     public interface OnMessage{

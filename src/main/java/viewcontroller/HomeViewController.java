@@ -49,7 +49,7 @@ public class HomeViewController {
         if(Helper.preferance.get("userName") == null){
             getUserName();
         } else {
-            bot.join(auth, "#"+Helper.preferance.get("userName"));
+            bot.join(auth, "#overdrive1g");
         }
 
         bot.setOnJoin((channel, sender, login, hostname)->
@@ -61,7 +61,7 @@ public class HomeViewController {
     public void addMessage(String msg){
         Platform.runLater(() -> {
             Label newLabel = new Label(msg);
-            newLabel.setPrefWidth(500);
+            newLabel.setPrefWidth(480);
             newLabel.setWrapText(true);
 
             chatListView.getItems().add(newLabel);
